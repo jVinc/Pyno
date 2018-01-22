@@ -7,18 +7,29 @@
 
 import collections
 
+import inspect
+
+def get_default_args(func):
+    signature = inspect.signature(func)
+    return {
+        k: v.default
+        for k, v in signature.parameters.items()
+        if v.default is not inspect.Parameter.empty
+    }
+
 class TreeNode:
     """tree_node is an object used to construct object-trees for generation of structed text like html/xhtml/svg code"""
 
     defaults = {}  # Contains default values used for tag properties
 
-    def __new__(typ, name, *args, **kwargs):
+    def __new__(typ, _tagname, *args, **kwargs):
         obj = object.__new__(typ)
-        obj.name = name
+        obj.name = _tagname
         obj.args = args
         # The kwargs are initiated using defaults for the tag if they exist
-        obj.kwargs = dict(TreeNode.defaults[name].copy(), **kwargs) if name in TreeNode.defaults else kwargs
+        obj.kwargs = dict(TreeNode.defaults[obj.name].copy(), **kwargs) if obj.name in TreeNode.defaults else kwargs
         # todo should this be stored in self.__dict__ instead of self.__dict__['kwargs'] ?
+        # todo perhaps given arguments should overwrite the defaults... otherwise they are more a sort of superfaults
         return obj
 
     def __getattr__(self, item):
@@ -28,7 +39,6 @@ class TreeNode:
             return object.__getattribute__(self, item)
 
     # todo Is there anything to gain from defining setattr?
-
     def __setattr__(self, key, value):
         if key not in ('name', 'args', 'kwargs', 'value'):
             self.kwargs[key] = value
@@ -37,19 +47,26 @@ class TreeNode:
 
     def __str__(self):
 
+        # Poperties with _ preceding are not passed on to html.
+        property_args = {k: v for k, v in self.kwargs.items() if not k.startswith('_')}
+
         # Generate attribute definitions:
-        properties = (' '+' '.join([f'{name}="{value}"' for name, value in self.kwargs.items()])) \
-            if len(self.kwargs) > 0 else ''
+        properties = (' '+' '.join([f'{name.replace("_", "-")}="{value}"' for name, value in property_args.items()])) \
+            if len(property_args) > 0 else ''
 
         if isinstance(self.args, collections.Iterator):
             # This unwraps iterators so they aren't exausted if the structure is iterated more than once.
             self.args = list(self.args)
 
         # Generate content string
-        content_string = ''.join([''.join(str(x) for x in line) if hasattr(line, '__iter__') else str(line) for line in self.args])
+        content_string = ''.join([''.join(str(x) for x in line) if hasattr(line, '__iter__')
+                                  else str(line) for line in self.args])
 
         # Return content with enclosing tag
-        return f'<{self.name}{properties}>{content_string}</{self.name}>'
+        if self.kwargs.get('_void_element', False):
+            return f'<{self.name}{properties} />'
+        else:
+            return f'<{self.name}{properties}>{content_string}</{self.name}>'
 
 
 class TreeSeed:
@@ -59,7 +76,10 @@ class TreeSeed:
         sub_node = next((x for x in TreeSub.__subclasses__() if x.__name__ == attr), None)
         if sub_node:
             def wrapper(*arg, **kwargs):
-                return sub_node(*arg, **kwargs)
+                # Inject construct defaults into initialization
+                node_args = get_default_args(sub_node.construct)
+                node_args.update(kwargs)
+                return sub_node(*arg, **node_args)
         else:
             def wrapper(*arg, **kwargs):
                 return TreeNode(attr, *arg, **kwargs)

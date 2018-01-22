@@ -105,3 +105,4 @@ ENV/
 
 /node_modules/
 /Examples/resources/node_modules/
+*-lock.json

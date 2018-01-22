@@ -7,11 +7,12 @@ Custom tags can be added to the list, and running the script.
 # The static definition is needed in order for autocomplete to pick it up.
 """
 
-tags = 'html head style script body title div p h1 h2 h3 h4 h5 h6 u b i s a em strong span font del_ ins ul ol li dd dt dl ' \
+
+tags = 'body title div p h1 h2 h3 h4 h5 h6 u b i s a em strong span font del_ ins ul ol li dd dt dl ' \
        'article section nav aside header footer audio video object_ embed param fieldset legend button textarea ' \
        'label select option table thead tbody tr th td caption blockquote cite q abbr acronym address meta link ' \
        'br hr input_ img code samp pre var kbd dfn' \
-       + 'plot datatable graphics'
+       + 'plot datatable graphics html head style script'
 
 if __name__ == '__main__':
 
@@ -39,10 +40,6 @@ if __name__ == '__main__':
 # Auto generated class definition
 class HTMLTagList:
     """Dummy class used to provide autocomplete for TreeSeed"""
-    html = None
-    head = None
-    style = None
-    script = None
     body = None
     title = None
     div = None
@@ -115,3 +112,7 @@ class HTMLTagList:
     dfnplot = None
     datatable = None
     graphics = None
+    html = None
+    head = None
+    style = None
+    script = None

@@ -4,7 +4,9 @@ def linspace(first, last, n):
     return [(last-first)*x/(n-1)+first for x in range(n)]
 
 # Setting default parameters to be added to svg elements
-TreeNode.defaults['svg'] = {'version': '1.1', 'xmlns:xlink': "http://www.w3.org/1999/xlink", 'xmlns': "http://www.w3.org/2000/svg"}
+TreeNode.defaults['svg'] = {'version': '1.1',
+                            'xmlns:xlink': "http://www.w3.org/1999/xlink",
+                            'xmlns': "http://www.w3.org/2000/svg"}
 
 
 def rescale_fun(box_from, box_to):
@@ -37,11 +39,12 @@ def svg_plot(data_outside, data_region=None, labels=('', ''), marked_location=No
                       'vertical_align_hard': 5,
                       'ticks_x_height': 10,
                       'ticks_y_width': 20,
-                      'margin': (60, 60, 80, 120) #Margin follows css standard so top, right, bottom, left
+                      'margin': (60, 60, 80, 120)  # Margin follows css standard so top, right, bottom, left
                       }
 
+    # Pixel locations of origin and upper right corner.
     canvas_region = [[cfg['margin'][3], cfg['height']-cfg['margin'][2]],
-                     [cfg['width']-cfg['margin'][1], cfg['margin'][0]]]  # These are the pixel locations of origin and upper right corner.
+                     [cfg['width']-cfg['margin'][1], cfg['margin'][0]]]
 
 
     point_data = list(map(rescale_fun(data_region, canvas_region), data_outside))
@@ -68,7 +71,11 @@ def svg_plot(data_outside, data_region=None, labels=('', ''), marked_location=No
     y_labels = label_treatment(linspace(data_region[0][1], data_region[1][1], cfg['ticks_y']))
 
     h_x_labels = H.g([H.text(label, x=x, y=cfg['height']-cfg['margin'][2]+cfg['ticks_offset_x'])
-        for x, label in zip(x_ticks, x_labels)]+[H.text(x_axis_label, x=cfg['width']/2, y=cfg['height']-(cfg['margin'][2]-cfg['ticks_offset_x']-cfg['ticks_x_height'])/2, Class='x_axis_label')],
+        for x, label in zip(x_ticks, x_labels)] +
+                     [H.text(x_axis_label,
+                             x=cfg['width']/2,
+                             y=cfg['height']-(cfg['margin'][2]-cfg['ticks_offset_x']-cfg['ticks_x_height'])/2,
+                             Class='x_axis_label')],
             Class='labels x-labels')
 
     y_x_positions = [cfg['margin'][3]-cfg['ticks_offset_y']]*len(y_labels)
@@ -80,7 +87,8 @@ def svg_plot(data_outside, data_region=None, labels=('', ''), marked_location=No
     h_y_labels = H.g([H.text(label, x=x, y=y)
                           for x, y, label in zip(y_x_positions, y_positions, y_labels)] +
                             [H.text(y_axis_label, x=0, y=0,
-                                  transform="translate("+str(distance_y_label_to_axis)+","+str(distance_y_label_center)+") rotate(-90)", Class='y_axis_label')],
+                                  transform="translate("+str(distance_y_label_to_axis)+
+                                            ","+str(distance_y_label_center)+") rotate(-90)", Class='y_axis_label')],
                              Class='labels y-labels')
 
     # surface = H.g(H.path('', nodeClass='first_set', d=fill_surface_d(point_data, y_ticks[0])), Class='surfaces')
