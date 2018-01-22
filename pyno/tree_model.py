@@ -76,7 +76,7 @@ class TreeSeed:
         sub_node = next((x for x in TreeSub.__subclasses__() if x.__name__ == attr), None)
         if sub_node:
             def wrapper(*arg, **kwargs):
-                # Inject construct defaults into initialization
+                # todo this method leads to a 4.5 slowdown prime target for optimization
                 node_args = get_default_args(sub_node.construct)
                 node_args.update(kwargs)
                 return sub_node(*arg, **node_args)

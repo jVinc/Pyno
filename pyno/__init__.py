@@ -16,4 +16,4 @@ class CDATA(TreeSub):
 
 # todo consider adding some magic to add default parameters from construct as parameters on the object during initialization. (*It's funky but nice in practice*)
 
-__version__ = "0.0.3-dev4"
+__version__ = "0.0.3-dev5"

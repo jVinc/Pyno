@@ -24,3 +24,6 @@ with shelve.open('performancelog') as db:
 with shelve.open('performancelog') as db:
     for key, value in db.items():
         print(key, value)
+
+
+print('\ncurrent:', value)
