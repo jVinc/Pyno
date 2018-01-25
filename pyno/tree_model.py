@@ -46,7 +46,9 @@ class TreeNode:
             object.__setattr__(self, key, value)
 
     def __str__(self):
+        return str(self.construct(*self.args, **self.kwargs))
 
+    def construct(self, *args, **kwargs):
         # Poperties with _ preceding are not passed on to html.
         property_args = {k: v for k, v in self.kwargs.items() if not k.startswith('_')}
 
@@ -69,100 +71,49 @@ class TreeNode:
             return f'<{self.name}{properties}>{content_string}</{self.name}>'
 
 
-class TreeSeed:
-    """Class to make it easy to generate arbitrary tags.
-    If a tag is present as a subclass of TreeSub, then it's automatically switched."""
-    def __getattr__(self, attr):
-        sub_node = next((x for x in TreeSub.__subclasses__() if x.__name__ == attr), None)
-        if sub_node:
-            def wrapper(*arg, **kwargs):
-                # todo this method leads to a 4.5 slowdown prime target for optimization
-                node_args = get_default_args(sub_node.construct)
-                node_args.update(kwargs)
-                return sub_node(*arg, **node_args)
-        else:
-            def wrapper(*arg, **kwargs):
-                return TreeNode(attr, *arg, **kwargs)
-        return wrapper
-
-class TreeSeedLean:
-    """Class to make it easy to generate arbitrary tags.
-    If a tag is present as a subclass of TreeSub, then it's automatically switched."""
-    def __getattr__(self, attr):
-        sub_node = next((x for x in TreeSub.__subclasses__() if x.__name__ == attr), None)
-        if sub_node:
-            return sub_node
-        else:
-            def wrapper(*arg, **kwargs):
-                return TreeNode(attr, *arg, **kwargs)
-        return wrapper
-
-# todo, if the class name is passed on in the attribute access, then direct subclasses of TreeNode can be used instead
-class TreeSub(TreeNode):
-    """ TreeSub is a TreeNode subclass used to register user-defined tags """
-    def __new__(cls, *args, **kwargs):
-        return super().__new__(cls, cls.__name__, *args, **kwargs)
-
-    def __str__(self):
-        return str(self.construct(*self.args, **self.kwargs))
-
-
 class NodeDispatcher(type):
     """ Diverts attributes to subclasses when they exist,
     and includes default arguments of construct in the initializer
     """
     def __getattr__(self, attr):
-        for sub_node in TreeSub.__subclasses__():
+        for sub_node in HTML.__subclasses__():
             if sub_node.__name__ == attr:
                 # todo adding default arguments cause 3x-4x slowdown
-                return partial(sub_node, **get_default_args(sub_node.construct))
+                # return partial(sub_node, **get_default_args(sub_node.construct))
+                return sub_node
         else:
             return partial(TreeNode, attr)
 
-class HTML(metaclass=NodeDispatcher):
+class HTML(TreeNode, metaclass=NodeDispatcher):
+    """ TreeSub is a TreeNode subclass used to register user-defined tags """
+    def __new__(cls, *args, **kwargs):
+        return super().__new__(cls, cls.__name__, *args, **kwargs)
     pass
 
-
-class subelm(TreeSub):
-    def construct(self, input):
-        return 'Heheheh'+ input
 
 
 """html is an instantiated object of the TreeSeed class, 
 used to provide easy generation of TreeNodes through attribute access 
 Type annotation against HTMLTagList is added purely to be able to have autocompletion in editors that support this"""
 from pyno.html_tags_autocomplete import HTMLTagList
-# html = TreeSeed()  # type: HTMLTagList
-html = HTML
-
-# html = TreeSeedLean()
-
-""" Performance
-dispatcher with defaults        11.4
-dispatcher without defaults      3.4
-instance with defaults          11.4 ? 
-instance without defaults        2.55
+# Backwards compatibility
+html = HTML  # type: HTMLTagList
+TreeSub = HTML
 
 
-"""
+class subelm(HTML):
+    def construct(self, input):
+        return HTML.div('Hehehehtml '+ input)
 
 if __name__ == '__main__':
-    h = TreeSeed()  # type: HTMLTagList
+    h = html
     H = HTML
 
+    #print(H.subelm)
+    #print(H.subelm()('x'))
     print(H.body(H.head(H.meta(author='Jackie Vincent Larsen')), H.body(H.div(H.p('Hello world')))))
 
-    print(h.div)
+    print(h.div('x'))
     print(h.subelm('k'))
     print(H.div('x'))
     print(H.subelm('x'))
-
-
-"""
-TreeSeed:
-    An instantiated class defining __getatter__
-
-Dispatcher:
-    A class with a metaclass defining __getattr__ allowing attribute handling on the object itself
-
-"""
