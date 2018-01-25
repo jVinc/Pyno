@@ -8,12 +8,9 @@ for tag in void_elements:
     TreeNode.defaults[tag] = {'_void_element': True}
 
 
-# Create a special element for CDATA insertion
-class CDATA(TreeSub):
-    def construct(self, content):
-        return f"<![CDATA[{content}]]>"
+from pyno.costum_tags import CDATA, Include
 
 
 # todo consider adding some magic to add default parameters from construct as parameters on the object during initialization. (*It's funky but nice in practice*)
 
-__version__ = "0.0.3-dev5"
+__version__ = "0.0.4-dev1"
