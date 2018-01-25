@@ -49,6 +49,7 @@ class TreeNode:
         return str(self.construct(*self.args, **self.kwargs))
 
     def construct(self, *args, **kwargs):
+        """ This function constructs the output format. Here it's building a string representation of html"""
         # Poperties with _ preceding are not passed on to html.
         property_args = {k: v for k, v in self.kwargs.items() if not k.startswith('_')}
 
@@ -79,13 +80,17 @@ class NodeDispatcher(type):
         for sub_node in HTML.__subclasses__():
             if sub_node.__name__ == attr:
                 # todo adding default arguments cause 3x-4x slowdown
-                # return partial(sub_node, **get_default_args(sub_node.construct))
-                return sub_node
+                return partial(sub_node, **get_default_args(sub_node.construct))
+                # return sub_node
         else:
             return partial(TreeNode, attr)
 
 class HTML(TreeNode, metaclass=NodeDispatcher):
-    """ TreeSub is a TreeNode subclass used to register user-defined tags """
+    """ HTML is a class used to:
+    * create TreeNodes though attribute dispatching     eg. H.div())
+    * register user-defined tags through subclassing    eg. class myclass(H)
+    * dispatch to user-defined classes though attribute dispatching eg. H.myclass()
+    """
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, cls.__name__, *args, **kwargs)
     pass
