@@ -1,4 +1,4 @@
-from pyno import html as H, TreeNode, TreeSub
+from pyno import HTML as H, TreeNode
 def linspace(first, last, n):
     """ returns a linear range from first to last with n elements"""
     return [(last-first)*x/(n-1)+first for x in range(n)]

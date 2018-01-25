@@ -1,10 +1,10 @@
 """ Example illustrating using pyno to provide a shallow wrapper over chart.js using a custom """
 
-from pyno import html as H, browser_preview, TreeSub
+from pyno import HTML as H, browser_preview
 import json
 
 
-class Chart(TreeSub):
+class Chart(H):
     """ Custom element which creates the canvas and script required to generate the chart.js chart"""
     def __init__(self, plotstruct, *args, **kwargs):
         super().__init__(*args, **kwargs)

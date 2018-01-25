@@ -1,9 +1,9 @@
-from pyno import html as H, browser_preview, TreeNode, TreeSub
+from pyno import HTML as H, browser_preview, TreeNode
 
 TreeNode.defaults['div'] = {'style': 'background-color:Purple;'}
 TreeNode.defaults['my_page'] = {'style': 'background-color:Yellow;'}
 
-class MyPage(TreeSub):
+class MyPage(H):
     def construct(self, *args, flymetothemoon='sure', **kwargs):
         an_element = H.div('Pope')
 

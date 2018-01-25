@@ -1,10 +1,10 @@
-from pyno import TreeSub, html as H, browser_preview
+from pyno import HTML as H, browser_preview
 
 
 
 
 
-class SpecialButton(TreeSub):
+class SpecialButton(H):
     def __init__(self, label, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.label = label

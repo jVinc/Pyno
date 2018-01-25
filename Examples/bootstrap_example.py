@@ -1,8 +1,8 @@
 """ This example shows how to make costum components to generate the default bootstrap template """
-from pyno import html as H, browser_preview, TreeSub
+from pyno import HTML as H, browser_preview
 
 
-class BootstrapBody(TreeSub):
+class BootstrapBody(H):
     """ Defines the minimal page template for bootstrap themed content"""
     def construct(self, *args,
                   title='Bootstrap 101 Template',
@@ -26,7 +26,7 @@ class BootstrapBody(TreeSub):
            lang="en")
 
 
-class BootstrapStarterTemplate(TreeSub):
+class BootstrapStarterTemplate(H):
     """ Defines the default Bootstrap starter template"""
     def construct(self, *args, **kwargs):
         return BootstrapBody(

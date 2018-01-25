@@ -1,4 +1,4 @@
-from pyno.tree_model import html, TreeSub, TreeNode
+from pyno.tree_model import HTML, html, TreeNode, TreeSub
 from pyno.browser_preview import browser_preview
 
 

@@ -13,7 +13,7 @@ option can simply be removed from these by setting TreeNode.defaults['meta'] = {
 """
 # todo fix this setting
 
-from pyno import html as H, browser_preview, TreeNode
+from pyno import HTML as H, browser_preview, TreeNode
 
 TreeNode.defaults['div'] = {'style': 'background-color:Green;'}
 TreeNode.defaults['br'] = {'_void_element': False}
