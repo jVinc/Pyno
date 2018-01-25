@@ -104,21 +104,3 @@ from pyno.html_tags_autocomplete import HTMLTagList
 # Backwards compatibility
 html = HTML  # type: HTMLTagList
 TreeSub = HTML
-
-
-class subelm(HTML):
-    def construct(self, input):
-        return HTML.div('Hehehehtml '+ input)
-
-if __name__ == '__main__':
-    h = html
-    H = HTML
-
-    #print(H.subelm)
-    #print(H.subelm()('x'))
-    print(H.body(H.head(H.meta(author='Jackie Vincent Larsen')), H.body(H.div(H.p('Hello world')))))
-
-    print(h.div('x'))
-    print(h.subelm('k'))
-    print(H.div('x'))
-    print(H.subelm('x'))
