@@ -1,7 +1,8 @@
-from pyno import HTML as H, TreeNode
+from pyno import html as H, TreeNode
 def linspace(first, last, n):
     """ returns a linear range from first to last with n elements"""
     return [(last-first)*x/(n-1)+first for x in range(n)]
+
 
 # Setting default parameters to be added to svg elements
 TreeNode.defaults['svg'] = {'version': '1.1',

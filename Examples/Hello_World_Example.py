@@ -1,4 +1,4 @@
-from pyno import HTML as H, browser_preview, TreeNode
+from pyno import html as H, browser_preview, TreeNode
 
 TreeNode.defaults['div'] = {'style': 'background-color:Green;'}
 

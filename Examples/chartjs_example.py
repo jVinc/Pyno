@@ -1,6 +1,6 @@
 """ Example illustrating using pyno to provide a shallow wrapper over chart.js using a custom """
 
-from pyno import HTML as H, browser_preview
+from pyno import html as H, browser_preview
 import json
 
 

@@ -85,7 +85,7 @@ class NodeDispatcher(type):
         else:
             return partial(TreeNode, attr)
 
-class HTML(TreeNode, metaclass=NodeDispatcher):
+class HTML(TreeNode, metaclass=NodeDispatcher):  # type: HTMLTagList
     """ HTML is a class used to:
     * create TreeNodes though attribute dispatching     eg. H.div())
     * register user-defined tags through subclassing    eg. class myclass(H)

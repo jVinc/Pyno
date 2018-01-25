@@ -1,5 +1,5 @@
 """ This example shows how to make costum components to generate the default bootstrap template """
-from pyno import HTML as H, browser_preview
+from pyno import html as H, browser_preview
 
 
 class BootstrapBody(H):
