@@ -1,3 +1,4 @@
+from pyno.html_tags_autocomplete import HTMLTagList
 from pyno.tree_model import HTML, html, TreeNode, TreeSub
 from pyno.browser_preview import browser_preview
 

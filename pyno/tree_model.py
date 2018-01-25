@@ -1,10 +1,6 @@
 
 # todo  update docs, defaults are aquired at definition time. Show trick for doing late bound attributes
 
-# todo  add support for Void elements (self closing tags both with and without />
-# todo  add a module for css parsing
-# todo  Simplify structure so user doesn't need to import 3 different objects
-
 import collections
 from functools import partial
 import inspect
@@ -28,8 +24,8 @@ class TreeNode:
         obj.args = args
         # The kwargs are initiated using defaults for the tag if they exist
         obj.kwargs = dict(TreeNode.defaults[obj.name].copy(), **kwargs) if obj.name in TreeNode.defaults else kwargs
-        # todo should this be stored in self.__dict__ instead of self.__dict__['kwargs'] ?
         # todo perhaps given arguments should overwrite the defaults... otherwise they are more a sort of superfaults
+        # todo perhaps defaults should be handled on the HTML class rather than on the treenode classes
         return obj
 
     def __getattr__(self, item):
@@ -38,7 +34,6 @@ class TreeNode:
         else:
             return object.__getattribute__(self, item)
 
-    # todo Is there anything to gain from defining setattr?
     def __setattr__(self, key, value):
         if key not in ('name', 'args', 'kwargs', 'value'):
             self.kwargs[key] = value
@@ -50,7 +45,7 @@ class TreeNode:
 
     def construct(self, *args, **kwargs):
         """ This function constructs the output format. Here it's building a string representation of html"""
-        # Poperties with _ preceding are not passed on to html.
+        # Properties with _ preceding are not passed on to html.
         property_args = {k: v for k, v in self.kwargs.items() if not k.startswith('_')}
 
         # Generate attribute definitions:
@@ -58,7 +53,7 @@ class TreeNode:
             if len(property_args) > 0 else ''
 
         if isinstance(self.args, collections.Iterator):
-            # This unwraps iterators so they aren't exausted if the structure is iterated more than once.
+            # This unwraps iterators so they aren't exhausted if the structure is iterated more than once.
             self.args = list(self.args)
 
         # Generate content string
