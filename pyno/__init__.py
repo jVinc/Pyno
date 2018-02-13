@@ -14,4 +14,14 @@ from pyno.costum_tags import CDATA, Include
 
 # todo consider adding some magic to add default parameters from construct as parameters on the object during initialization. (*It's funky but nice in practice*)
 
-__version__ = "0.0.4-dev1"
+from werkzeug.serving import run_simple
+from werkzeug.wrappers import Request, Response
+
+
+def serve_example(content, host='localhost', port=8080):
+    @Request.application
+    def application(request):
+        return Response(str(content), mimetype='text/HTML')
+    run_simple(host, port, application, use_reloader=True)
+
+__version__ = "0.0.5-dev"
