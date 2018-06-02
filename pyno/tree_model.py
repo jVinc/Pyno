@@ -1,5 +1,5 @@
 
-# todo  update docs, defaults are aquired at definition time. Show trick for doing late bound attributes
+# todo update docs, defaults are acquired at definition time. Show trick for doing late bound attributes
 
 import collections
 from functools import partial
@@ -16,16 +16,15 @@ def get_default_args(func):
 class TreeNode:
     """tree_node is an object used to construct object-trees for generation of structed text like html/xhtml/svg code"""
 
-    defaults = {}  # Contains default values used for tag properties
+    # defaults = {}  # Contains default values used for tag properties
 
     def __new__(typ, _tagname, *args, **kwargs):
         obj = object.__new__(typ)
         obj.name = _tagname
-        obj.args = args
+        obj.args = list(args)
         # The kwargs are initiated using defaults for the tag if they exist
-        obj.kwargs = dict(TreeNode.defaults[obj.name].copy(), **kwargs) if obj.name in TreeNode.defaults else kwargs
+        obj.kwargs = dict(HTML.defaults[obj.name].copy(), **kwargs) if obj.name in HTML.defaults else kwargs
         # todo perhaps given arguments should overwrite the defaults... otherwise they are more a sort of superfaults
-        # todo perhaps defaults should be handled on the HTML class rather than on the treenode classes
         return obj
 
     def __getattr__(self, item):
@@ -52,9 +51,10 @@ class TreeNode:
         properties = (' '+' '.join([f'{name.replace("_", "-")}="{value}"' for name, value in property_args.items()])) \
             if len(property_args) > 0 else ''
 
-        if isinstance(self.args, collections.Iterator):
-            # This unwraps iterators so they aren't exhausted if the structure is iterated more than once.
-            self.args = list(self.args)
+        # This raplaces iterators with lists so they aren't exhausted if the structure is iterated more than once.
+        for n, elm in enumerate(self.args):
+            if isinstance(elm, collections.Iterator):
+                self.args[n] = list(self.args[n])
 
         # Generate content string
         content_string = ''.join([''.join(str(x) for x in line) if hasattr(line, '__iter__')
@@ -80,12 +80,17 @@ class NodeDispatcher(type):
         else:
             return partial(TreeNode, attr)
 
+
 class HTML(TreeNode, metaclass=NodeDispatcher):  # type: HTMLTagList
     """ HTML is a class used to:
     * create TreeNodes though attribute dispatching     eg. H.div())
     * register user-defined tags through subclassing    eg. class myclass(H)
     * dispatch to user-defined classes though attribute dispatching eg. H.myclass()
+    * Track default arguments to nodes eg. H.defaults['myclass'] = {'a': 3, 'b': 3}
     """
+
+    defaults = {}
+
     def __new__(cls, *args, **kwargs):
         return super().__new__(cls, cls.__name__, *args, **kwargs)
     pass

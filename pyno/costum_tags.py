@@ -15,7 +15,7 @@ class Include(TreeSub):
             return H.link(rel="stylesheet", type="text/css", href=file_path)
         else:
             raise ValueError('Included file ending is not supported in H.Include' + file_path)
-        # todo consider adding more as it becomes relevant to usage
+
 
 class Import(TreeSub):
     def construct(self, file_path):

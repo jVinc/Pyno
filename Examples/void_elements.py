@@ -11,12 +11,12 @@ There are 16 html tags that are set to be void elements per default such as br a
 option can simply be removed from these by setting TreeNode.defaults['meta'] = {'_void_element': False}
 
 """
-# todo fix this setting
 
-from pyno import html as H, browser_preview, TreeNode
+from pyno import HTML as H
 
-TreeNode.defaults['div'] = {'style': 'background-color:Green;'}
-TreeNode.defaults['br'] = {'_void_element': False}
+H.defaults['div'] = {'style': 'background-color:Green;'}
+H.defaults['br'] = {'_void_element': False}
+H.defaults['div'] = {'_void_element': True}
 
 print(str(
     H.html(H.br(),

@@ -1,7 +1,7 @@
-from pyno import html as H, browser_preview, TreeNode
+from pyno import html as H, browser_preview
 
-TreeNode.defaults['div'] = {'style': 'background-color:Purple;'}
-TreeNode.defaults['my_page'] = {'style': 'background-color:Yellow;'}
+H.defaults['div'] = {'style': 'background-color:Purple;'}
+H.defaults['my_page'] = {'style': 'background-color:Yellow;'}
 
 class MyPage(H):
     def construct(self, *args, flymetothemoon='sure', **kwargs):

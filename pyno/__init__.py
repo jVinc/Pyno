@@ -6,7 +6,7 @@ from pyno.browser_preview import browser_preview
 # Set default settings for void elements
 void_elements = 'br hr img input link meta area base col command embed keygen param source track wbr'.split(' ')
 for tag in void_elements:
-    TreeNode.defaults[tag] = {'_void_element': True}
+    HTML.defaults[tag] = {'_void_element': True}
 
 
 from pyno.costum_tags import CDATA, Include
@@ -24,4 +24,4 @@ def serve_example(content, host='localhost', port=8080):
         return Response(str(content), mimetype='text/HTML')
     run_simple(host, port, application, use_reloader=True)
 
-__version__ = "0.0.5-dev"
+__version__ = "0.0.6"
