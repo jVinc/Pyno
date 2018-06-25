@@ -67,6 +67,23 @@ class TreeNode:
             return f'<{self.name}{properties}>{content_string}</{self.name}>'
 
 
+    def __call__(self, environ, start_response, **kwargs):
+        """ When called a TreeNode object will act like a WSGI application.
+        This way they can be passed directly as output in for instance Flask apps, and served using the wsgi
+        reference implementation easily """
+        start_response('200 OK', [('Content-type', 'text/HTML')])
+        return [str(self)]
+
+        return wrapfun
+
+
+"""
+app_rv = app(environ, start_response)
+    close_func = getattr(app_rv, 'close', None)
+    app_iter = iter(app_rv)
+"""
+
+
 class NodeDispatcher(type):
     """ Diverts attributes to subclasses when they exist,
     and includes default arguments of construct in the initializer
@@ -80,6 +97,8 @@ class NodeDispatcher(type):
         else:
             return partial(TreeNode, attr)
 
+def decorator_generator():
+    return None
 
 class HTML(TreeNode, metaclass=NodeDispatcher):  # type: HTMLTagList
     """ HTML is a class used to:
@@ -88,6 +107,14 @@ class HTML(TreeNode, metaclass=NodeDispatcher):  # type: HTMLTagList
     * dispatch to user-defined classes though attribute dispatching eg. H.myclass()
     * Track default arguments to nodes eg. H.defaults['myclass'] = {'a': 3, 'b': 3}
     """
+
+    @staticmethod
+    def construct(func, **kwargs):
+        """ This static method is a decorator that allows constructing subclass by decorating construct functions.
+        This simplifies the main use case of construct-classes which is simply to wrap some structure without any class state or additional methods management"""
+        print('did it work?')
+        globals()[func.__name__] = type(func.__name__, (HTML,), {"construct": lambda self, *args, **kwargs: func(*args, **kwargs)})
+        return func
 
     defaults = {}
 

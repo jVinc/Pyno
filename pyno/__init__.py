@@ -24,4 +24,4 @@ def serve_example(content, host='localhost', port=8080):
         return Response(str(content), mimetype='text/HTML')
     run_simple(host, port, application, use_reloader=True)
 
-__version__ = "0.0.6"
+__version__ = "0.0.9"
